@@ -36,5 +36,10 @@ Just run this installation script from your favorite Terminal:
 RELEASE=$(curl -s https://api.github.com/repos/ScullWM/updemia-client/releases \
     | grep tag_name \
     | head -n 1 \
-    | cut -d '"' -f 4) && $(curl -sS "https://raw.githubusercontent.com/ScullWM/updemia-client/$RELEASE/install.sh" | sh)
+    | cut -d '"' -f 4) && \
+curl -s -L "https://raw.githubusercontent.com/ScullWM/updemia-client/$RELEASE/install.sh" \
+    -o /tmp/updemia-install.sh && \
+sh /tmp/updemia-install.sh
 ```
+
+Now, feel free to remove `/tmp/updemia-install.sh` installation script.
