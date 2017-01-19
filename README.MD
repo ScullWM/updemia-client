@@ -15,8 +15,15 @@ killall SystemUIServer
 ```
 
 ### Second step:
+Get and install client binary:
+```
+curl -L https://github.com/ScullWM/updemia-client/releases/download/v0.1/updemia-client -o updemia-client
+chmod a+x updemia-client
+mv updemia-client /usr/local/bin/updemia-client
+```
+(feel free to change your binaries dedicated path)
+
 Start the bin and define the screencapture destination path
 ```
-chmod +x ./updemia-client
 ./updemia-client /tmp/updemia
 ```
