@@ -17,7 +17,7 @@ killall SystemUIServer
 ### Second step:
 Get and install client binary:
 ```
-curl -L https://github.com/ScullWM/updemia-client/releases/download/v0.1/updemia-client -o updemia-client
+curl -L https://github.com/ScullWM/updemia-client/releases/download/v0.2/updemia-client -o updemia-client
 chmod a+x updemia-client
 mv updemia-client /usr/local/bin/updemia-client
 ```
