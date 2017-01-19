@@ -12,7 +12,8 @@ clientConfiguration() {
 clientInstallation() {
     defaults write com.apple.screencapture location $SCREENSHOTS_PATH
     killall SystemUIServer
-    curl -sL https://github.com/ScullWM/updemia-client/releases/download/v0.1/updemia-client -o "/tmp/$BINARY_NAME"
+    LATEST_BINARY_FILE_URL=$(curl -s https://api.github.com/repos/ScullWM/updemia-client/releases | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
+    curl -sL $LATEST_BINARY_FILE_URL -o "/tmp/$BINARY_NAME"
     chmod a+x "/tmp/$BINARY_NAME"
     mv "/tmp/$BINARY_NAME" "/usr/local/bin/$BINARY_NAME"
 }
