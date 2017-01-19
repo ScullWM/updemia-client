@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/atotto/clipboard"
-	"github.com/deckarep/gosx-notifier"
 	"github.com/howeyc/fsnotify"
 	"io"
 	"io/ioutil"
@@ -17,8 +16,12 @@ import (
 	"strings"
 )
 
+const defaultDestinationPath string = "/tmp/screendirect/"
+const apiPostEndpoint string = "http://www.updemia.com/api/v1/post"
+
 type UpdemiaResponse struct {
 	Key string
+	Url string
 }
 
 func main() {
@@ -55,7 +58,7 @@ func main() {
 }
 
 func getDestinationPath() string {
-	destination_path := "/tmp/screendirect/"
+	destination_path := defaultDestinationPath
 
 	if len(os.Args) > 1 {
 		if len(os.Args[1]) > 0 {
@@ -95,13 +98,13 @@ func newfileUploadRequest(uri string, paramName, path string) (*http.Request, er
 }
 
 func sendFile(filename string) {
-	request, err := newfileUploadRequest("http://www.updemia.com/api/v1/post", "file", filename)
+	request, err := newfileUploadRequest(apiPostEndpoint, "file", filename)
 	if err == nil {
 		client := &http.Client{}
 
 		resp, err := client.Do(request)
 		if err != nil {
-			panic(err)
+			notifyUserFail()
 		}
 
 		defer resp.Body.Close()
@@ -110,12 +113,11 @@ func sendFile(filename string) {
 
 		var response UpdemiaResponse
 		json.Unmarshal(body, &response)
-		url := "http://www.updemia.com/media/" + response.Key
 
-		err = clipboard.WriteAll(url)
-		notifyUserSuccess(url)
+		err = clipboard.WriteAll(response.Url)
+		notifyUserSuccess(response.Url)
 
-		log.Printf("New upload: %+v", url)
+		log.Printf("New upload: %+v", response.Url)
 	}
 }
 
@@ -130,30 +132,4 @@ func getNewFilePath(ev *fsnotify.FileEvent) string {
 	}
 
 	return ""
-}
-
-func notifyUserSuccess(url string) {
-	note := gosxnotifier.NewNotification("Upload complete")
-	note.AppIcon = "/tmp/m1UIjW1.png"
-	note.Title = "On updemia.com"
-	// note.Sound = gosxnotifier.Basso
-	note.Link = url
-	err := note.Push()
-
-	if err != nil {
-		log.Println("notification error")
-	}
-}
-
-func saveNotificationLogo() {
-	img, _ := os.Create("/tmp/m1UIjW1.png")
-	defer img.Close()
-
-	resp, _ := http.Get("http://www.updemia.com/images/logo.png")
-	defer resp.Body.Close()
-
-	_, err := io.Copy(img, resp.Body)
-	if err != nil {
-		log.Println("Error getting logo")
-	}
 }
