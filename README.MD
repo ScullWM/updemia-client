@@ -27,3 +27,14 @@ Start the bin and define the screencapture destination path
 ```
 ./updemia-client /tmp/updemia
 ```
+
+## One-line installation (with `curl`)
+
+Just run this installation script from your favorite Terminal:
+
+```
+RELEASE=$(curl -s https://api.github.com/repos/ScullWM/updemia-client/releases \
+    | grep tag_name \
+    | head -n 1 \
+    | cut -d '"' -f 4) && $(curl -sS "https://raw.githubusercontent.com/ScullWM/updemia-client/$RELEASE/install.sh" | sh)
+```
